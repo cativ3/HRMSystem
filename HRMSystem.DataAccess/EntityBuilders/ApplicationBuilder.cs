@@ -48,6 +48,12 @@ namespace HRMSystem.DataAccess.EntityBuilders
                 .HasForeignKey(x => x.CountryId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            builder
+                .HasOne<WorkTitle>(x => x.WorkTitle)
+                .WithMany()
+                .HasForeignKey(x => x.WorkTitleId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
 
             builder.ToTable("Applications");
         }

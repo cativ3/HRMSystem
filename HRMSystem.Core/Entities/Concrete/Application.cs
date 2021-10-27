@@ -17,6 +17,8 @@ namespace HRMSystem.Core.Entities.Concrete
         public Country Country { get; set; }
         public int CityId { get; set; }
         public City City { get; set; }
+        public int WorkTitleId { get; set; }
+        public WorkTitle WorkTitle { get; set; }
         public string About { get; set; }
         public DateTime AppliedDate { get; set; }
 
