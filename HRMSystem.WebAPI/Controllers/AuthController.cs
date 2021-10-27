@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using HRMSystem.Service.Abstracts;
 using System.Threading.Tasks;
 using HRMSystem.Core.Entities.Dtos.UserDtos;
+using HRMSystem.Core.Utilities.Results.Concretes;
+using System.Net;
 
 namespace HRMSystem.WebAPI.Controllers
 {
@@ -23,7 +25,14 @@ namespace HRMSystem.WebAPI.Controllers
         {
             var result = await _authService.RegisterAsync(userRegisterDto);
 
-            return Ok(result);
+            return Ok(new ApiDataResult
+            {
+                Endpoint = Url.Action(),
+                HttpStatusCode = HttpStatusCode.OK,
+                ResultStatus = result.ResultStatus,
+                Message = result.Message,
+                Data = result.Data
+            });
         }
 
         [HttpPost]
@@ -32,7 +41,14 @@ namespace HRMSystem.WebAPI.Controllers
         {
             var result = await _authService.LoginAsync(userLoginDto);
 
-            return Ok(result);
+            return Ok(new ApiDataResult
+            {
+                Endpoint = Url.Action(),
+                HttpStatusCode = HttpStatusCode.OK,
+                ResultStatus = result.ResultStatus,
+                Message = result.Message,
+                Data = result.Data
+            });
         }
     }
 }
