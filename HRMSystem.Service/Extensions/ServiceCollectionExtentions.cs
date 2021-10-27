@@ -32,6 +32,8 @@ namespace HRMSystem.Service.Extensions
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<ICountryService, CountryService>();
 
             services.AddFluentValidation(options =>
             {

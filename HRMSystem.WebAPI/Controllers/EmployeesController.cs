@@ -1,4 +1,5 @@
-﻿using HRMSystem.Core.Entities.Dtos.EmployeeDtos;
+﻿using HRMSystem.Core.Entities.ComplexTypes;
+using HRMSystem.Core.Entities.Dtos.EmployeeDtos;
 using HRMSystem.Core.Utilities.Results.ComplexTypes;
 using HRMSystem.Core.Utilities.Results.Concretes;
 using HRMSystem.Service.Abstracts;
@@ -21,14 +22,62 @@ namespace HRMSystem.WebAPI.Controllers
             _employeeService = employeeService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync(
+            int? workTitleId,
+            WorkingStatus? workingStatus,
+            string searchKeyword,
+            int currentPage = 1,
+            int pageSize = 20,
+            bool? isActive = true,
+            bool? isDeleted = false,
+            EmployeeOrderBy orderBy = EmployeeOrderBy.StartedAt,
+            bool isAscending = false)
+        {
+            var result = await _employeeService.GetAllAsync(
+                workTitleId, 
+                workingStatus, 
+                currentPage, 
+                pageSize, 
+                isActive, 
+                isDeleted,
+                orderBy,
+                isAscending,
+                searchKeyword);
+
+            return Ok(new ApiDataResult
+            {
+                Endpoint = Url.Action(),
+                HttpStatusCode = HttpStatusCode.OK,
+                ResultStatus = result.ResultStatus,
+                Message = result.Message,
+                Data = result.Data
+            });
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+            var result = await _employeeService.GetByIdAsync(id);
+
+            return Ok(new ApiDataResult
+            {
+                Endpoint = Url.Action(),
+                HttpStatusCode = HttpStatusCode.OK,
+                ResultStatus = result.ResultStatus,
+                Message = result.Message,
+                Data = result.Data
+            });
+        }
+
         [HttpPost]
-        [Route("")]
         public async Task<IActionResult> AddAsync(EmployeeAddDto employeeAddDto)
         {
             var result = await _employeeService.AddAsync(employeeAddDto);
             return Ok(new ApiResult
             {
-                EndPoint = Url.Link("", new { Controller = "Employees", Action = "Add" }),
+                Endpoint = Url.Action(),
                 HttpStatusCode = HttpStatusCode.OK,
                 ResultStatus = result.ResultStatus,
                 Message = result.Message
@@ -36,13 +85,12 @@ namespace HRMSystem.WebAPI.Controllers
         }
 
         [HttpPut]
-        [Route("")]
         public async Task<IActionResult> UpdateAsync(EmployeeUpdateDto employeeUpdateDto)
         {
             var result = await _employeeService.UpdateAsync(employeeUpdateDto);
             return Ok(new ApiResult
             {
-                EndPoint = Url.Link("", new { Controller = "Employees", Action = "Update" }),
+                Endpoint = Url.Action(),
                 HttpStatusCode = HttpStatusCode.OK,
                 ResultStatus = result.ResultStatus,
                 Message = result.Message
@@ -50,13 +98,12 @@ namespace HRMSystem.WebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("")]
         public async Task<IActionResult> DeleteAsync(Guid employeeId)
         {
             var result = await _employeeService.DeleteAsync(employeeId);
             return Ok(new ApiResult
             {
-                EndPoint = Url.Link("", new { Controller = "Employees", Action = "Delete" }),
+                Endpoint = Url.Action(),
                 HttpStatusCode = HttpStatusCode.OK,
                 ResultStatus = result.ResultStatus,
                 Message = result.Message
@@ -70,7 +117,7 @@ namespace HRMSystem.WebAPI.Controllers
             var result = await _employeeService.HardDeleteAsync(employeeId);
             return Ok(new ApiResult
             {
-                EndPoint = Url.Link("", new { Controller = "Employees", Action = "Delete" }),
+                Endpoint = Url.Action(),
                 HttpStatusCode = HttpStatusCode.OK,
                 ResultStatus = result.ResultStatus,
                 Message = result.Message
