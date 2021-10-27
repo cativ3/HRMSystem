@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRMSystem.Core.Utilities.Results.Concretes
+namespace HRMSystem.Core.Entities.Dtos.CityDtos
 {
-    public class ApiDataResult : ApiResult
+    public class CityGetDto : IDto
     {
-        public object Data { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

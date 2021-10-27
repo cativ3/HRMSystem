@@ -10,7 +10,7 @@ namespace HRMSystem.Core.Utilities.Results.Concretes
 {
     public class ApiResult
     {
-        public string EndPoint { get; set; }
+        public string Endpoint { get; set; }
         public ResultStatus ResultStatus { get; set; }
         public HttpStatusCode HttpStatusCode { get; set; }
         public string Message { get; set; }
