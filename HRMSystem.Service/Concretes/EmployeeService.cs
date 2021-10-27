@@ -137,7 +137,7 @@ namespace HRMSystem.Service.Concretes
 
             var employee = await query.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (employee is null) throw new ArgumentNotFoundException(new Error(id.ToString(), "Employee was not found."));
+            if (employee is null) throw new ArgumentNotFoundException(new Error("id", "Employee was not found."));
 
             var employeeGetDto = _mapper.Map<EmployeeGetDto>(employee);
 

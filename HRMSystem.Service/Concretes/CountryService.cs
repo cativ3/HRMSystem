@@ -29,8 +29,6 @@ namespace HRMSystem.Service.Concretes
         {
             var countriesQuery = _dbContext.Countries.AsNoTracking();
 
-            if (!await countriesQuery.AnyAsync()) throw new ArgumentNotFoundException(new Error("Country", "Countries not found."));
-
             var countryDtos = await countriesQuery.Select(country => _mapper.Map<CountryGetDto>(country)).ToListAsync();
 
             return new DataResult<IEnumerable<CountryGetDto>>(ResultStatus.Success, countryDtos);

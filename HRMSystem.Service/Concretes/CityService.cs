@@ -31,8 +31,6 @@ namespace HRMSystem.Service.Concretes
         {
             var citiesQuery = _dbContext.Cities.AsNoTracking().Where(x => x.CountryId == countryId);
 
-            if (!await citiesQuery.AnyAsync()) throw new ArgumentNotFoundException(new Error("CountryId", "Cities with this country ID could not be found."));
-
             var citiesListDto = await citiesQuery.Select(city => _mapper.Map<CityGetDto>(city)).ToListAsync();
 
             return new DataResult<IEnumerable<CityGetDto>>(ResultStatus.Success, citiesListDto);

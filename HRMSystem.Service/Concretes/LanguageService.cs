@@ -30,8 +30,6 @@ namespace HRMSystem.Service.Concretes
         {
             var languagesQuery = _dbContext.Languages.AsNoTracking();
 
-            if (!await languagesQuery.AnyAsync()) throw new ArgumentNotFoundException(new Error("Language", "Languages not found."));
-
             var languageDtos = await languagesQuery.Select(language => _mapper.Map<LanguageGetDto>(language)).ToListAsync();
 
             return new DataResult<IEnumerable<LanguageGetDto>>(ResultStatus.Success, languageDtos);
