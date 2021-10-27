@@ -19,7 +19,7 @@ namespace HRMSystem.DataAccess.Contexts
         public DbSet<Application> Applications { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Interview> Interviews { get; set; }
-        public DbSet<Language> Langauges { get; set; }
+        public DbSet<Language> Languages { get; set; }
         public DbSet<WorkTitle> WorkTitles { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
