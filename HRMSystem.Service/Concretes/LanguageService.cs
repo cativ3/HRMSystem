@@ -15,33 +15,29 @@ using System.Threading.Tasks;
 
 namespace HRMSystem.Service.Concretes
 {
-    public class LanguageService : ILanguageService
+    public class LanguageService : ServiceBase, ILanguageService
     {
-        private readonly HRManagementDbContext _dbContext;
-        private readonly IMapper _mapper;
-
-        public LanguageService(HRManagementDbContext dbContext, IMapper mapper)
+        public LanguageService(HRManagementDbContext dbContext, IMapper mapper):base(dbContext, mapper)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            
         }
 
         public async Task<IDataResult<IEnumerable<LanguageGetDto>>> GetAllWithoutPaging()
         {
-            var languagesQuery = _dbContext.Languages.AsNoTracking();
+            var languagesQuery = DbContext.Languages.AsNoTracking();
 
-            var languageDtos = await languagesQuery.Select(language => _mapper.Map<LanguageGetDto>(language)).ToListAsync();
+            var languageDtos = await languagesQuery.Select(language => Mapper.Map<LanguageGetDto>(language)).ToListAsync();
 
             return new DataResult<IEnumerable<LanguageGetDto>>(ResultStatus.Success, languageDtos);
         }
 
         public async Task<IDataResult<LanguageGetDto>> GetById(int languageId)
         {
-            var language = await _dbContext.Languages.AsNoTracking().FirstOrDefaultAsync(x => x.Id == languageId);
+            var language = await DbContext.Languages.AsNoTracking().FirstOrDefaultAsync(x => x.Id == languageId);
 
             if (language is null) throw new ArgumentNotFoundException(new Error("languageId", "Language not found"));
 
-            var languageDto = _mapper.Map<LanguageGetDto>(language);
+            var languageDto = Mapper.Map<LanguageGetDto>(language);
 
             return new DataResult<LanguageGetDto>(ResultStatus.Success, languageDto);
         }

@@ -16,33 +16,29 @@ using System.Threading.Tasks;
 
 namespace HRMSystem.Service.Concretes
 {
-    public class CityService : ICityService
+    public class CityService : ServiceBase, ICityService
     {
-        private readonly HRManagementDbContext _dbContext;
-        private readonly IMapper _mapper;
-
-        public CityService(HRManagementDbContext dbContext, IMapper mapper)
+        public CityService(HRManagementDbContext dbContext, IMapper mapper):base(dbContext, mapper)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+
         }
 
         public async Task<IDataResult<IEnumerable<CityGetDto>>> GetAllWithoutPaging(int countryId)
         {
-            var citiesQuery = _dbContext.Cities.AsNoTracking().Where(x => x.CountryId == countryId);
+            var citiesQuery = DbContext.Cities.AsNoTracking().Where(x => x.CountryId == countryId);
 
-            var citiesListDto = await citiesQuery.Select(city => _mapper.Map<CityGetDto>(city)).ToListAsync();
+            var citiesListDto = await citiesQuery.Select(city => Mapper.Map<CityGetDto>(city)).ToListAsync();
 
             return new DataResult<IEnumerable<CityGetDto>>(ResultStatus.Success, citiesListDto);
         }
 
         public async Task<IDataResult<CityGetDto>> GetById(int cityId)
         {
-            var city = await _dbContext.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cityId);
+            var city = await DbContext.Cities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cityId);
 
             if (city is null) throw new ArgumentNotFoundException(new Error("CityId", "City was not found."));
 
-            var cityGetDto = _mapper.Map<CityGetDto>(city);
+            var cityGetDto = Mapper.Map<CityGetDto>(city);
 
             return new DataResult<CityGetDto>(ResultStatus.Success, cityGetDto);
         }
