@@ -18,16 +18,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRMSystem.Service.Concretes
 {
-    public class EmployeeService : IEmployeeService
+    public class EmployeeService : ServiceBase, IEmployeeService
     {
-        private readonly HRManagementDbContext _dbContext;
-        private readonly IMapper _mapper;
         private readonly IValidator<Employee> _validator;
 
-        public EmployeeService(HRManagementDbContext dbContext, IMapper mapper, IValidator<Employee> validator)
+        public EmployeeService(HRManagementDbContext dbContext, IMapper mapper, IValidator<Employee> validator):base(dbContext, mapper)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
             _validator = validator;
         }
 
@@ -42,7 +38,7 @@ namespace HRMSystem.Service.Concretes
             bool isAscending, 
             string searchKeyword)
         {
-            IQueryable<Employee> query = _dbContext.Set<Employee>().AsNoTracking();
+            IQueryable<Employee> query = DbContext.Set<Employee>().AsNoTracking();
 
 
             // Filters
@@ -114,7 +110,7 @@ namespace HRMSystem.Service.Concretes
                 Employees = await query
                     .Skip((currentPage - 1) * pageSize)
                     .Take(pageSize)
-                    .Select(employee => _mapper.Map<EmployeeGetDto>(employee))
+                    .Select(employee => Mapper.Map<EmployeeGetDto>(employee))
                     .ToListAsync(),
                 CurrentPage = currentPage,
                 PageSize = pageSize,
@@ -127,7 +123,7 @@ namespace HRMSystem.Service.Concretes
 
         public async Task<IDataResult<EmployeeGetDto>> GetByIdAsync(Guid id)
         {
-            IQueryable<Employee> query = _dbContext.Set<Employee>().AsNoTracking();
+            IQueryable<Employee> query = DbContext.Set<Employee>().AsNoTracking();
 
             // Includes
 
@@ -139,14 +135,14 @@ namespace HRMSystem.Service.Concretes
 
             if (employee is null) throw new ArgumentNotFoundException(new Error("id", "Employee was not found."));
 
-            var employeeGetDto = _mapper.Map<EmployeeGetDto>(employee);
+            var employeeGetDto = Mapper.Map<EmployeeGetDto>(employee);
 
             return new DataResult<EmployeeGetDto>(ResultStatus.Success, employeeGetDto);
         }
 
         public async Task<IResult> AddAsync(EmployeeAddDto employeeAddDto)
         {
-            var employee = _mapper.Map<Employee>(employeeAddDto);
+            var employee = Mapper.Map<Employee>(employeeAddDto);
 
             employee.IsActive = true;
             employee.IsDeleted = false;
@@ -162,18 +158,18 @@ namespace HRMSystem.Service.Concretes
                 throw new ValidationErrorException(errors.ToArray());
             }
 
-            await _dbContext.Employees.AddAsync(employee);
-            await _dbContext.SaveChangesAsync();
+            await DbContext.Employees.AddAsync(employee);
+            await DbContext.SaveChangesAsync();
 
             return new Result(ResultStatus.Success, "başarılı");
         }
 
         public async Task<IResult> UpdateAsync(EmployeeUpdateDto employeeUpdateDto)
         {
-            var oldEmployee = await _dbContext.Employees.AsNoTracking().FirstOrDefaultAsync(x => x.Id == employeeUpdateDto.Id);
+            var oldEmployee = await DbContext.Employees.AsNoTracking().FirstOrDefaultAsync(x => x.Id == employeeUpdateDto.Id);
             if (oldEmployee == null) throw new ArgumentNotFoundException(new Error(employeeUpdateDto.Id.ToString(), "Employee not found."));
 
-            var updatedEmployee = _mapper.Map<EmployeeUpdateDto, Employee>(employeeUpdateDto, oldEmployee);
+            var updatedEmployee = Mapper.Map<EmployeeUpdateDto, Employee>(employeeUpdateDto, oldEmployee);
 
             updatedEmployee.ModifiedDate = DateTime.Now;
 
@@ -185,34 +181,34 @@ namespace HRMSystem.Service.Concretes
                 throw new ValidationErrorException(errors.ToArray());
             }
 
-            _dbContext.Employees.Update(updatedEmployee);
-            await _dbContext.SaveChangesAsync();
+            DbContext.Employees.Update(updatedEmployee);
+            await DbContext.SaveChangesAsync();
 
             return new Result(ResultStatus.Success, "Employee updated.");
         }
 
         public async Task<IResult> DeleteAsync(Guid employeeId)
         {
-            var employee = await _dbContext.Employees.FirstOrDefaultAsync(x => x.Id == employeeId);
+            var employee = await DbContext.Employees.FirstOrDefaultAsync(x => x.Id == employeeId);
             if (employee == null) throw new ArgumentNotFoundException(new Error(employeeId.ToString(), "Employee not found."));
 
             employee.IsActive = false;
             employee.IsDeleted = true;
             employee.DeletedDate = DateTime.Now;
 
-            _dbContext.Employees.Update(employee);
-            await _dbContext.SaveChangesAsync();
+            DbContext.Employees.Update(employee);
+            await DbContext.SaveChangesAsync();
 
             return new Result(ResultStatus.Success, "Employee deleted.");
         }
 
         public async Task<IResult> HardDeleteAsync(Guid employeeId)
         {
-            var employee = await _dbContext.Employees.FirstOrDefaultAsync(x => x.Id == employeeId);
+            var employee = await DbContext.Employees.FirstOrDefaultAsync(x => x.Id == employeeId);
             if (employee == null) throw new ArgumentNotFoundException(new Error(employeeId.ToString(), "Employee not found."));
 
-            _dbContext.Employees.Remove(employee);
-            await _dbContext.SaveChangesAsync();
+            DbContext.Employees.Remove(employee);
+            await DbContext.SaveChangesAsync();
 
             return new Result(ResultStatus.Success, "Employee deleted.");
         }

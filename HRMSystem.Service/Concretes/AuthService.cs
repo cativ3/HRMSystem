@@ -19,17 +19,13 @@ using HRMSystem.Core.Utilities.Results.ComplexTypes;
 
 namespace HRMSystem.Service.Concretes
 {
-    public class AuthService : IAuthService
+    public class AuthService : ServiceBase, IAuthService
     {
-        private readonly HRManagementDbContext _dbContext;
-        private readonly IMapper _mapper;
         private readonly ITokenHelper _tokenHelper;
         private readonly UserManager<User> _userManager;
 
-        public AuthService(HRManagementDbContext dbContext, IMapper mapper, ITokenHelper tokenHelper, UserManager<User> userManager)
+        public AuthService(HRManagementDbContext dbContext, IMapper mapper, ITokenHelper tokenHelper, UserManager<User> userManager):base(dbContext, mapper)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
             _tokenHelper = tokenHelper;
             _userManager = userManager;
         }
@@ -44,11 +40,11 @@ namespace HRMSystem.Service.Concretes
 
             var tokenDto = _tokenHelper.CreateToken(user);
 
-            var userRefreshToken = await _dbContext.UserRefreshTokens.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            var userRefreshToken = await DbContext.UserRefreshTokens.FirstOrDefaultAsync(x => x.UserId == user.Id);
 
             if (userRefreshToken is null)
             {
-                await _dbContext.UserRefreshTokens.AddAsync(new UserRefreshToken
+                await DbContext.UserRefreshTokens.AddAsync(new UserRefreshToken
                 {
                     UserId = user.Id,
                     Token = tokenDto.RefreshToken,
@@ -61,22 +57,17 @@ namespace HRMSystem.Service.Concretes
                 userRefreshToken.ExpirationDate = tokenDto.RefreshTokenExpiration;
             }
 
-            await _dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
 
             return new DataResult<TokenDto>(ResultStatus.Success, tokenDto);
         }
 
         public async Task<IDataResult<TokenDto>> RegisterAsync(UserRegisterDto userRegisterDto)
         {
-            var isEmailExist = await _dbContext.Users.AnyAsync(x => x.Email == userRegisterDto.Email);
+            var isEmailExist = await DbContext.Users.AnyAsync(x => x.Email == userRegisterDto.Email);
             if (isEmailExist) throw new ValidationErrorException(new Error("Email", "Email is wrong"));
 
-            //var newUser = _mapper.Map<User>(userRegisterDto);
-            var newUser = new User
-            {
-                Email = userRegisterDto.Email,
-                UserName = userRegisterDto.UserName
-            };
+            var newUser = Mapper.Map<User>(userRegisterDto);
 
             var identityResult = await _userManager.CreateAsync(newUser, userRegisterDto.Password);
 
@@ -89,14 +80,14 @@ namespace HRMSystem.Service.Concretes
 
             var tokenDto = _tokenHelper.CreateToken(newUser);
 
-            await _dbContext.UserRefreshTokens.AddAsync(new UserRefreshToken
+            await DbContext.UserRefreshTokens.AddAsync(new UserRefreshToken
             {
                 Token = tokenDto.RefreshToken,
                 ExpirationDate = tokenDto.RefreshTokenExpiration,
                 UserId = newUser.Id
             });
 
-            await _dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
 
             return new DataResult<TokenDto>(ResultStatus.Success, tokenDto);
         }
