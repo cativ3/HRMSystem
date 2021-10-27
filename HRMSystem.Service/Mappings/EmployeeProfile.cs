@@ -19,14 +19,24 @@ namespace HRMSystem.Service.Mappings
                     x => x.WorkingStatus,
                     opt => opt.MapFrom(x => WorkingStatus.Working))
                 .ForMember(
-                    x => x.StartingDate,
-                    opt => opt.MapFrom(x => DateTime.Now))
-                .ForMember(
                     x => x.IsActive,
                     opt => opt.MapFrom(x => true))
                 .ForMember(
                     x => x.IsDeleted,
                     opt => opt.MapFrom(x => false));
+
+            CreateMap<EmployeeUpdateDto, Employee>();
+
+            CreateMap<Employee, EmployeeGetDto>()
+                .ForMember(
+                    x => x.WorkTitle,
+                    opt => opt.MapFrom(x => x.WorkTitle.Name))
+                .ForMember(
+                    x => x.City,
+                    opt => opt.MapFrom(x => x.City.Name))
+                .ForMember(
+                    x => x.Country,
+                    opt => opt.MapFrom(x => x.Country.Name));
         }
     }
 }
