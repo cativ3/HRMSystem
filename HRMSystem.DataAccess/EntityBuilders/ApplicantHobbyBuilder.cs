@@ -16,7 +16,7 @@ namespace HRMSystem.DataAccess.EntityBuilders
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.Property(x => x.Name).IsRequired(true);
+            builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Name).HasMaxLength(50);
 
             builder.Property(x => x.IsActive).IsRequired();
