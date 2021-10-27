@@ -1,4 +1,3 @@
-using HRMSystem.Core.Entities.Concrete;
 using HRMSystem.Core.Security.Helpers;
 using HRMSystem.Core.Security.Models;
 using HRMSystem.DataAccess.Contexts;
@@ -6,21 +5,14 @@ using HRMSystem.Service.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HRMSystem.Service.Concretes;
-using HRMSystem.Service.Abstracts;
 using HRMSystem.Service.Mappings;
 using HRMSystem.WebAPI.Middlewares;
 
@@ -37,9 +29,7 @@ namespace HRMSystem.WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ITokenHelper, JwtHelper>();
-
-            services.AddAutoMapper(typeof(UserProfile));
+            services.AddBusinessServices();
 
             services.AddDbContext<HRManagementDbContext>(options =>
             {
@@ -50,8 +40,6 @@ namespace HRMSystem.WebAPI
             });
 
             services.Configure<TokenOption>(Configuration.GetSection("TokenOptions"));
-
-            services.AddBusinessServices();
 
             services.AddCustomIdentity();
 

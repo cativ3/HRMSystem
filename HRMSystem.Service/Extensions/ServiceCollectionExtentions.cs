@@ -1,16 +1,12 @@
 ﻿using HRMSystem.Core.Entities.Concrete;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HRMSystem.DataAccess.Contexts;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 using HRMSystem.Service.Concretes;
 using HRMSystem.Service.Abstracts;
+using HRMSystem.Core.Security.Helpers;
 
 namespace HRMSystem.Service.Extensions
 {
@@ -32,6 +28,8 @@ namespace HRMSystem.Service.Extensions
 
         public static IServiceCollection AddBusinessServices(this IServiceCollection services)
         {
+            services.AddScoped<ITokenHelper, JwtHelper>();
+
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
 
@@ -39,6 +37,8 @@ namespace HRMSystem.Service.Extensions
             {
                 options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             });
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             return services;
         }
