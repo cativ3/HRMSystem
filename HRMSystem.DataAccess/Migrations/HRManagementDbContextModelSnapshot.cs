@@ -250,11 +250,16 @@ namespace HRMSystem.DataAccess.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
+                    b.Property<int>("WorkTitleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("WorkTitleId");
 
                     b.ToTable("Applications");
                 });
@@ -499,6 +504,18 @@ namespace HRMSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2021, 10, 28, 18, 9, 44, 625, DateTimeKind.Local).AddTicks(5843),
+                            DeletedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            IsDeleted = false,
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "English"
+                        });
                 });
 
             modelBuilder.Entity("HRMSystem.Core.Entities.Concrete.Role", b =>
@@ -530,15 +547,15 @@ namespace HRMSystem.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "55ef60d1-02e0-4cd8-a451-d27db91e819c",
-                            ConcurrencyStamp = "1945b102-2389-49be-9a26-06fcc3baf685",
+                            Id = "7b78aa97-758d-42cc-9479-bcacbe060c9b",
+                            ConcurrencyStamp = "70390888-8dbc-41d6-8c92-5daea1ec543b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f16b5a16-0d52-48ee-951e-cb6ee1e4a137",
-                            ConcurrencyStamp = "da49af43-65d0-4888-86cf-635f6d010faa",
+                            Id = "364cfad3-9a51-4880-9512-9acd802a9c52",
+                            ConcurrencyStamp = "0b54eeb8-a78f-477d-933b-53022fc8ec32",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -883,9 +900,16 @@ namespace HRMSystem.DataAccess.Migrations
                         .HasForeignKey("CountryId")
                         .IsRequired();
 
+                    b.HasOne("HRMSystem.Core.Entities.Concrete.WorkTitle", "WorkTitle")
+                        .WithMany()
+                        .HasForeignKey("WorkTitleId")
+                        .IsRequired();
+
                     b.Navigation("City");
 
                     b.Navigation("Country");
+
+                    b.Navigation("WorkTitle");
                 });
 
             modelBuilder.Entity("HRMSystem.Core.Entities.Concrete.City", b =>

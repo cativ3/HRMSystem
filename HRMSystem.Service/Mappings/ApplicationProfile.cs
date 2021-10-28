@@ -18,6 +18,9 @@ namespace HRMSystem.Service.Mappings
                     x => x.CreatedDate,
                     opt => opt.MapFrom(x => DateTime.Now))
                 .ForMember(
+                    x => x.AppliedDate,
+                    opt => opt.MapFrom(x => DateTime.Now))
+                .ForMember(
                     x => x.IsActive,
                     opt => opt.MapFrom(x => true))
                 .ForMember(
