@@ -21,6 +21,15 @@ namespace HRMSystem.DataAccess.EntityBuilders
 
 
             builder.ToTable("Languages");
+
+            builder.HasData(new Language
+            {
+                Id = 1,
+                Name = "English",
+                CreatedDate = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false
+            });
         }
     }
 }

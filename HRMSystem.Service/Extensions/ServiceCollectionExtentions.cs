@@ -7,6 +7,7 @@ using System.Reflection;
 using HRMSystem.Service.Concretes;
 using HRMSystem.Service.Abstracts;
 using HRMSystem.Core.Security.Helpers;
+using FluentValidation;
 
 namespace HRMSystem.Service.Extensions
 {
@@ -35,6 +36,7 @@ namespace HRMSystem.Service.Extensions
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<ILanguageService, LanguageService>();
+            services.AddScoped<IApplicationService, ApplicationService>();
 
             services.AddFluentValidation(options =>
             {
