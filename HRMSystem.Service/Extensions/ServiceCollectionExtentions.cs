@@ -37,6 +37,7 @@ namespace HRMSystem.Service.Extensions
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<ILanguageService, LanguageService>();
             services.AddScoped<IApplicationService, ApplicationService>();
+            services.AddScoped<IInterviewService, InterviewService>();
 
             services.AddFluentValidation(options =>
             {

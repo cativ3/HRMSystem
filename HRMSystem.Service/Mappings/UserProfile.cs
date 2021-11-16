@@ -15,6 +15,7 @@ namespace HRMSystem.Service.Mappings
         {
             CreateMap<UserRegisterDto, User>();
             CreateMap<UserLoginDto, User>();
+            CreateMap<User, UserGetDto>();
         }
     }
 }
